@@ -14,18 +14,18 @@ python arPlc.py wavFile.wav
 # Wave file format is a mono 44100Hz 16bit
 
 # In the execute def
-train = song.getFrames(0, 88200)
+train = song.getFrames(0, 44100)
 # from starting point in seonds, how many samples in the training
 
 
-ar = AR(22500)
+ar = AR(512)
 # the order (lag) of the ar model
 # larger lag captures temporal changes but increases training time
 
 test = song.getFrames(1, 1024)
 # same as above but for the test to generate samples after
 
-res = ar.predict(np.array(test), 44100, 1)
+res = ar.predict(np.array(test), 2048, 1)
 # how many samples to generate, monte carlo sim depth (the MC sim blows out samples, to is disabled in code-leave as one)
 
 '''
@@ -44,15 +44,15 @@ def execute():
     # open the file for reading.
     song = WAVrw(sys.argv[1])
     # read data (based on the chunk size)
-    train = song.getFrames(0, 88200)
+    train = song.getFrames(0, 44100)
     
-    ar = AR(22500)
+    ar = AR(512)
     
     ar.fit(np.array(train))
 
     test = song.getFrames(1, 1024)
     #print (np.array(test))
-    res = ar.predict(np.array(test), 44100, 1)
+    res = ar.predict(np.array(test), 2048, 1)
     res = res.astype(int)
     res = np.squeeze(res).tolist()
     print(train)
